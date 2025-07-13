@@ -1,1 +1,519 @@
-Hello World
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Granola Gambit: Interactive Strategy Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral Harmony -->
+    <!-- Application Structure Plan: Designed a thematic, single-page dashboard structure instead of a linear report format. The user journey starts with the macro 'Opportunity', drills down to the 'Customer', explores the 'Product' solution, understands the 'Brand' positioning, and finishes with the 'Launch Plan'. This non-linear, anchor-linked navigation allows stakeholders to jump to sections of interest, facilitating exploration over passive reading. Key interactions include chart hovers for data detail, clickable cards for persona exploration, and a comparison tool for competitive analysis, making complex information digestible and engaging. -->
+    <!-- Visualization & Content Choices: Market Data (Table 1) -> Goal: Compare growth -> Viz: Grouped Bar Chart (Chart.js) -> Interaction: Hover for tooltips -> Justification: Shows absolute size and growth potential simultaneously. Persona (Table 2) -> Goal: Organize/Inform -> Viz: Interactive HTML cards -> Interaction: Click to reveal info -> Justification: More engaging and scannable than a static table. Fortification (Table 3) -> Goal: Inform/Explain -> Viz: Interactive HTML grid of icons/text -> Interaction: Hover/click to show benefits -> Justification: Simplifies complex nutritional data into clear, benefit-oriented snippets. Competitors (Table 4) -> Goal: Compare -> Viz: Dynamic HTML content blocks -> Interaction: Buttons to switch displayed competitor data -> Justification: Allows for direct, user-controlled comparison. Launch Plan -> Goal: Organize/Change -> Viz: HTML/CSS timeline -> Interaction: Hover highlights -> Justification: Clearly visualizes the project sequence. Confirmed NO SVG/Mermaid. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s ease;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #c2410c; /* orange-700 */
+        }
+        .section-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .section-fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .persona-card-front, .persona-card-back {
+            backface-visibility: hidden;
+            transition: transform 0.7s cubic-bezier(.4,.2,.2,1);
+        }
+        .persona-card.flipped .persona-card-front {
+            transform: rotateY(180deg);
+        }
+        .persona-card.flipped .persona-card-back {
+            transform: rotateY(0deg);
+        }
+        .persona-card-back {
+            transform: rotateY(-180deg);
+        }
+        .tab-button.active {
+            background-color: #f97316; /* orange-500 */
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 antialiased">
+
+    <header class="sticky top-0 z-50 bg-stone-50/80 backdrop-blur-lg shadow-md">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl font-bold text-orange-600">Granola Gambit</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#opportunity" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-stone-600">The Opportunity</a>
+                        <a href="#customer" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-stone-600">The Customer</a>
+                        <a href="#product" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-stone-600">The Product</a>
+                        <a href="#brand" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-stone-600">The Brand</a>
+                        <a href="#launch" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-stone-600">The Launch</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <!-- Section: The Opportunity -->
+        <section id="opportunity" class="py-12 md:py-16 section-fade-in">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-stone-900 tracking-tight">The Market Opportunity</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-stone-600">This section explores the powerful convergence of trends creating a fertile ground for a D2C granola brand in India. We will visualize the significant growth across key food sectors, illustrating the scale of the opportunity driven by urbanization, rising incomes, and a profound shift towards health and wellness.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-16">
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-stone-200">
+                    <h3 class="text-xl font-bold text-orange-600">Convenience Need</h3>
+                    <p class="mt-2 text-stone-600">Urbanization and hectic schedules create a high demand for ready-to-eat solutions.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-stone-200">
+                    <h3 class="text-xl font-bold text-teal-600">Wellness Desire</h3>
+                    <p class="mt-2 text-stone-600">A surge in health consciousness drives consumers to seek nutritious alternatives.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-stone-200">
+                    <h3 class="text-xl font-bold text-amber-600">Premium Ability</h3>
+                    <p class="mt-2 text-stone-600">Rising disposable incomes empower spending on high-value, healthy products.</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-stone-200">
+                <h3 class="text-2xl font-bold text-center mb-2 text-stone-800">Converging Market Growth (2024-2033)</h3>
+                <p class="text-center text-stone-600 mb-6">The product operates at the nexus of several large, high-growth markets. Hover over the bars for detailed figures.</p>
+                <div class="chart-container">
+                    <canvas id="marketGrowthChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: The Customer -->
+        <section id="customer" class="py-12 md:py-16 section-fade-in">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-stone-900 tracking-tight">Meet Your Customer: The Urban Achiever</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-stone-600">Understanding who we're building for is the first step to success. This section introduces the "Urban Achiever," our target customer, a digitally-native, health-conscious, and ambitious individual. Click on each characteristic to explore their lifestyle, goals, and what drives their decisions.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="personaGrid">
+            </div>
+        </section>
+
+        <!-- Section: The Product -->
+        <section id="product" class="py-12 md:py-16 section-fade-in">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-stone-900 tracking-tight">The Winning Product Formula</h2>
+                 <p class="mt-4 max-w-3xl mx-auto text-lg text-stone-600">This section details the product strategy, designed to meet the specific demands of the Urban Achiever. Explore our commitment to clean, functional ingredients, the science-backed fortification plan that fuels performance, and a flavor strategy that fuses global appeal with the Indian palate.</p>
+            </div>
+
+            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-stone-200 mb-12">
+                <h3 class="text-2xl font-bold text-center mb-6 text-stone-800">Clean Sweetness: No Added Sugar</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div>
+                        <div class="p-4 bg-amber-100 rounded-lg">
+                            <h4 class="font-bold text-amber-800">Dates & Date Syrup</h4>
+                            <p class="text-sm text-amber-700 mt-1">Natural sweetness with fiber and minerals. Great for binding clusters.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="p-4 bg-amber-100 rounded-lg">
+                            <h4 class="font-bold text-amber-800">Raw Honey</h4>
+                            <p class="text-sm text-amber-700 mt-1">Culturally accepted, perceived as healthy, with a classic flavor.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="p-4 bg-amber-100 rounded-lg">
+                             <h4 class="font-bold text-amber-800">Monk Fruit Extract</h4>
+                            <p class="text-sm text-amber-700 mt-1">Zero-calorie option for specialized "keto" or "diabetic-friendly" lines.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-stone-200 mb-12">
+                <h3 class="text-2xl font-bold text-center mb-2 text-stone-800">Functional Fortification for Performance</h3>
+                <p class="text-center text-stone-600 mb-8">Elevating granola from a snack to functional fuel. Each serving is designed to deliver 15-30% of the RDA for key nutrients. Hover over each element to see its benefit.</p>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 text-center" id="fortificationGrid">
+                </div>
+            </div>
+
+             <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-stone-200">
+                <h3 class="text-2xl font-bold text-center mb-6 text-stone-800">A Flavor for Every Palate</h3>
+                <div class="flex justify-center mb-6">
+                    <div class="flex space-x-2 p-1 bg-stone-200 rounded-full">
+                        <button class="tab-button px-4 py-2 text-sm font-semibold rounded-full" data-tab="core">Core Classics</button>
+                        <button class="tab-button px-4 py-2 text-sm font-semibold rounded-full" data-tab="innovative">Indian Innovations</button>
+                    </div>
+                </div>
+                <div id="flavor-content">
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: The Brand -->
+        <section id="brand" class="py-12 md:py-16 section-fade-in">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-stone-900 tracking-tight">The Brand Blueprint</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-stone-600">This section outlines the strategy to build a powerful D2C brand that resonates with the Urban Achiever. We'll analyze the competitive landscape to identify our unique positioning and define a brand identity that communicates trust, quality, and performance.</p>
+            </div>
+            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-stone-200">
+                <h3 class="text-2xl font-bold text-center mb-2 text-stone-800">Competitive Landscape</h3>
+                <p class="text-center text-stone-600 mb-8">Select a brand to see how our proposed brand, "Verve", stacks up against the competition.</p>
+                <div class="flex flex-wrap justify-center gap-2 mb-8" id="competitor-buttons">
+                </div>
+                <div id="competitor-display" class="bg-stone-100 p-6 rounded-lg min-h-[250px] transition-opacity duration-300">
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: The Launch -->
+        <section id="launch" class="py-12 md:py-16 section-fade-in">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-stone-900 tracking-tight">The Launch Roadmap</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-stone-600">This phased roadmap provides a clear path from foundation to scale. It outlines the key activities in product development, marketing, and operations over the first year, ensuring a strategic and focused market entry.</p>
+            </div>
+            <div class="relative">
+                <div class="hidden md:block absolute left-1/2 -translate-x-1/2 h-full w-0.5 bg-stone-300"></div>
+                <div class="space-y-16 md:space-y-0 md:grid md:grid-cols-1 md:gap-y-16">
+                    <div class="relative md:grid md:grid-cols-2 md:items-center">
+                        <div class="md:pr-8 flex md:justify-end">
+                            <div class="text-center md:text-right bg-white p-6 rounded-xl shadow-lg border border-stone-200 w-full max-w-md">
+                                <h4 class="text-lg font-bold text-orange-600">Phase 1: Foundation (Months 1-3)</h4>
+                                <p class="mt-2 text-sm text-stone-600">Finalize formulations, brand identity, and packaging. Build and test the D2C website. Begin pre-launch social media buzz.</p>
+                            </div>
+                        </div>
+                         <div class="hidden md:flex justify-center"><div class="bg-orange-600 w-4 h-4 rounded-full"></div></div>
+                        <div class="md:pl-8"></div>
+                    </div>
+                     <div class="relative md:grid md:grid-cols-2 md:items-center">
+                        <div class="md:pr-8 md:order-2">
+                             <div class="md:pl-8 flex md:justify-start">
+                                 <div class="text-center md:text-left bg-white p-6 rounded-xl shadow-lg border border-stone-200 w-full max-w-md">
+                                    <h4 class="text-lg font-bold text-teal-600">Phase 2: Launch & Activation (Months 4-6)</h4>
+                                    <p class="mt-2 text-sm text-stone-600">Go live with the D2C site and core flavors. Activate full influencer and paid media campaigns. Obsess over customer experience.</p>
+                                </div>
+                             </div>
+                        </div>
+                         <div class="hidden md:flex justify-center md:order-1"><div class="bg-teal-600 w-4 h-4 rounded-full"></div></div>
+                        <div class="md:pl-8"></div>
+                    </div>
+                    <div class="relative md:grid md:grid-cols-2 md:items-center">
+                        <div class="md:pr-8 flex md:justify-end">
+                             <div class="text-center md:text-right bg-white p-6 rounded-xl shadow-lg border border-stone-200 w-full max-w-md">
+                                <h4 class="text-lg font-bold text-amber-600">Phase 3: Optimization & Scale (Months 7-12)</h4>
+                                <p class="mt-2 text-sm text-stone-600">Analyze sales data. Introduce innovative flavors and single-serve formats. Expand to curated marketplaces like Amazon & BigBasket.</p>
+                            </div>
+                        </div>
+                        <div class="hidden md:flex justify-center"><div class="bg-amber-600 w-4 h-4 rounded-full"></div></div>
+                        <div class="md:pl-8"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="bg-stone-800 text-stone-300">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center text-sm">
+            <p>&copy; 2025 Granola Gambit Strategy Dashboard. All data derived from strategic report.</p>
+        </div>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const marketData = {
+        labels: ['Breakfast Cereals', 'Healthy Snacks', 'Snack Bars', 'Fortified Foods'],
+        datasets: [
+            {
+                label: 'Market Size 2024 (USD Billion)',
+                data: [5.0, 3.5, 0.417, 13.98],
+                backgroundColor: 'rgba(2, 132, 199, 0.6)', // sky-600
+                borderColor: 'rgba(2, 132, 199, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Projected Market Size (USD Billion)',
+                data: [10.2, 6.12, 0.853, 23.82],
+                backgroundColor: 'rgba(217, 119, 6, 0.6)', // amber-600
+                borderColor: 'rgba(217, 119, 6, 1)',
+                borderWidth: 1
+            }
+        ]
+    };
+
+    const personaData = [
+        { title: 'Demographics', content: 'Age 18-35. Lives in Tier 1/2 cities. Working professional or student. Middle to upper-middle class income.' },
+        { title: 'Lifestyle & Habits', content: 'Engages in gym, HIIT, yoga. Prone to "snackification". Reads nutritional labels diligently. Seeks high-protein, clean-label foods.' },
+        { title: 'Goals & Aspirations', content: 'Seeks holistic well-being for physical and mental performance. Career-driven and ambitious. Views body as an asset for success.' },
+        { title: 'Pain Points', content: 'Time scarcity due to hectic schedules. Confused by conflicting health claims. Skeptical of "big food" brands.' }
+    ];
+
+    const fortificationData = [
+        { name: 'B-Vitamins', benefit: 'Energy Metabolism: Convert food into usable energy for sustained physical and mental performance.' },
+        { name: 'Vitamin D', benefit: 'Bone & Muscle Integrity: Supports bone density and proper muscle function, crucial for an active lifestyle.' },
+        { name: 'Calcium', benefit: 'Bone & Muscle Health: Critical for strong bones and proper muscle contraction.' },
+        { name: 'Iron', benefit: 'Endurance & Oxygen: Vital for oxygen transport in blood, preventing fatigue and boosting endurance.' },
+        { name: 'Vitamin C', benefit: 'Recovery & Repair: Potent antioxidant that helps repair exercise-induced tissue damage.' },
+        { name: 'Zinc', benefit: 'Immunity & Healing: Supports immune function and tissue healing, especially after intense activity.' }
+    ];
+    
+    const flavorData = {
+        core: [
+            { name: 'Dark Chocolate & Almond', desc: 'A rich, sophisticated classic. Indulgent yet healthy, appealing to an adult palate.' },
+            { name: 'Classic Fruit & Nut', desc: 'A timeless, comforting blend of almonds, walnuts, cranberries, and raisins.' }
+        ],
+        innovative: [
+            { name: 'Mango, Coconut & Cardamom', desc: 'A unique, tropical taste of India. Sweet mango, toasted coconut, and aromatic cardamom.' },
+            { name: 'Chai Spice & Cashew', desc: 'A comforting and modern twist on a beloved Indian flavor profile with warming spices.' },
+            { name: 'Golden Turmeric & Ginger', desc: 'An "immunity-boosting" functional flavor leveraging Ayurvedic ingredients for wellness.'}
+        ]
+    };
+    
+    const competitorData = {
+        "Verve (Proposed)": {
+            usp: "Clean Label + Targeted Functional Fortification",
+            price: "~₹110 - ₹135",
+            noSugar: "Core to brand identity (sweetened with dates/honey).",
+            fortification: "Core USP: Fortified with a targeted blend for active lifestyles.",
+            audience: "The 'Urban Achiever' (Performance-focused).",
+            messaging: "'Fuel for the Modern Hustle'",
+            color: 'orange'
+        },
+        "Kellogg's": {
+            usp: "Taste, Crunch, Brand Recognition",
+            price: "~₹88 - ₹90",
+            noSugar: "Reduced sugar variants, but not a core identity.",
+            fortification: "Fortified with vitamins & iron.",
+            audience: "Mass Market, Families",
+            messaging: "'Tasteful & Crunchy Start'",
+            color: 'gray'
+        },
+        "Yoga Bar": {
+            usp: "High Protein, No Added Sugar Options",
+            price: "~₹106 - ₹128",
+            noSugar: "Strong claim on specific products.",
+            fortification: "Focus on protein & fiber.",
+            audience: "Fitness Enthusiasts, Urban Millennials",
+            messaging: "'Yum-asana', 'Healthy Indulgence'",
+            color: 'gray'
+        },
+        "The Whole Truth": {
+            usp: "100% Clean Label, No Hidden Ingredients",
+            price: "~₹120 - ₹130",
+            noSugar: "Core to brand identity (sweetened with dates).",
+            fortification: "Focus on natural nutrients.",
+            audience: "Label-conscious 'Truth-Seekers'",
+            messaging: "'Nothing to Hide'",
+            color: 'gray'
+        }
+    };
+
+
+    function initMarketChart() {
+        const ctx = document.getElementById('marketGrowthChart').getContext('2d');
+        if (!ctx) return;
+        new Chart(ctx, {
+            type: 'bar',
+            data: marketData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Market Size (USD Billion)'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y) + 'B';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function initPersonaGrid() {
+        const grid = document.getElementById('personaGrid');
+        if (!grid) return;
+        grid.innerHTML = personaData.map(item => `
+            <div class="persona-card w-full h-48 cursor-pointer group perspective">
+                <div class="relative preserve-3d w-full h-full">
+                    <div class="persona-card-front absolute w-full h-full p-6 bg-white rounded-xl shadow-lg border border-stone-200 flex flex-col justify-center items-center text-center">
+                        <h4 class="text-lg font-bold text-teal-700">${item.title}</h4>
+                        <p class="text-xs text-stone-500 mt-2">(Click to reveal)</p>
+                    </div>
+                    <div class="persona-card-back absolute w-full h-full p-6 bg-teal-600 text-white rounded-xl shadow-lg flex flex-col justify-center items-center text-center">
+                        <p class="text-sm">${item.content}</p>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        document.querySelectorAll('.persona-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.classList.toggle('flipped');
+            });
+        });
+    }
+
+    function initFortificationGrid() {
+        const grid = document.getElementById('fortificationGrid');
+        if (!grid) return;
+        grid.innerHTML = fortificationData.map(item => `
+            <div class="group" title="${item.benefit}">
+                <div class="p-4 bg-stone-100 rounded-lg group-hover:bg-teal-100 group-hover:shadow-md transition-all duration-300 h-full flex items-center justify-center flex-col">
+                    <h5 class="font-semibold text-stone-700 group-hover:text-teal-800">${item.name}</h5>
+                    <p class="text-xs text-stone-500 group-hover:text-teal-700 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 h-0 group-hover:h-auto">${item.benefit}</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function initFlavorTabs() {
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const flavorContent = document.getElementById('flavor-content');
+
+        function renderFlavors(type) {
+            flavorContent.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-${flavorData[type].length} gap-6">
+                    ${flavorData[type].map(flavor => `
+                        <div class="bg-stone-100 p-6 rounded-lg text-center">
+                            <h4 class="font-bold text-orange-700">${flavor.name}</h4>
+                            <p class="text-sm text-stone-600 mt-2">${flavor.desc}</p>
+                        </div>
+                    `).join('')}
+                </div>`;
+        }
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                renderFlavors(button.dataset.tab);
+            });
+        });
+
+        // Initial render
+        tabButtons[0].classList.add('active');
+        renderFlavors('core');
+    }
+    
+    function initCompetitorComparator() {
+        const buttonsContainer = document.getElementById('competitor-buttons');
+        const displayContainer = document.getElementById('competitor-display');
+
+        function renderCompetitor(name) {
+            const data = competitorData[name];
+            displayContainer.style.opacity = 0;
+            setTimeout(() => {
+                displayContainer.innerHTML = `
+                    <h4 class="text-xl font-bold text-${data.color}-600 mb-4">${name}</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-left">
+                        <div><strong class="text-stone-600 block">USP:</strong> <span class="text-stone-800">${data.usp}</span></div>
+                        <div><strong class="text-stone-600 block">Price/100g:</strong> <span class="text-stone-800">${data.price}</span></div>
+                        <div class="col-span-1 md:col-span-2"><strong class="text-stone-600 block">No-Sugar Claim:</strong> <span class="text-stone-800">${data.noSugar}</span></div>
+                        <div class="col-span-1 md:col-span-2"><strong class="text-stone-600 block">Fortification:</strong> <span class="text-stone-800">${data.fortification}</span></div>
+                        <div><strong class="text-stone-600 block">Target Audience:</strong> <span class="text-stone-800">${data.audience}</span></div>
+                        <div><strong class="text-stone-600 block">Brand Messaging:</strong> <span class="text-stone-800">${data.messaging}</span></div>
+                    </div>
+                `;
+                displayContainer.style.opacity = 1;
+            }, 300);
+        }
+
+        buttonsContainer.innerHTML = Object.keys(competitorData).map(name =>
+            `<button class="competitor-btn px-4 py-2 text-sm font-semibold rounded-full border-2 border-${competitorData[name].color}-500 text-${competitorData[name].color}-600 bg-white hover:bg-${competitorData[name].color}-500 hover:text-white transition-colors" data-name="${name}">${name}</button>`
+        ).join('');
+        
+        const buttons = document.querySelectorAll('.competitor-btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                buttons.forEach(btn => {
+                    const data = competitorData[btn.dataset.name];
+                    btn.classList.remove(`bg-${data.color}-500`, 'text-white');
+                    btn.classList.add(`text-${data.color}-600`, 'bg-white');
+                });
+                const data = competitorData[button.dataset.name];
+                button.classList.add(`bg-${data.color}-500`, 'text-white');
+                renderCompetitor(button.dataset.name);
+            });
+        });
+
+        buttons[0].click();
+    }
+    
+    function initScrollObserver() {
+        const sections = document.querySelectorAll('.section-fade-in');
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    
+                    navLinks.forEach(link => {
+                        link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                    });
+                }
+            });
+        }, { threshold: 0.15 });
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    }
+
+    initMarketChart();
+    initPersonaGrid();
+    initFortificationGrid();
+    initFlavorTabs();
+    initCompetitorComparator();
+    initScrollObserver();
+});
+</script>
+</body>
+</html>
